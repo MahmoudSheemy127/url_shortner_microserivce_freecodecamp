@@ -28,23 +28,14 @@ app.get('/',(req,res) => {
 //form post request
 app.post('/api/shorturl',(req,res) => {
     
-    try{
+    if(myApp.isValidUrl(req.body.url))
+    {
         const url = new URL(req.body.url)
-    
-        console.log(url)
 
-        const options = {
-      
-            // Setting family as 6 i.e. IPv6
-            family: 6,
-            hints: dns.ADDRCONFIG | dns.V4MAPPED,
-        };
-        console.log(url.hostname)
-        dns.lookup(url.hostname,options,(data) => {
-            console.log(data)
+        dns.lookup(url.hostname,(data) => {
+
             if(!data)
             {
-                console.log("Valid!")
                 let key = myApp.hashUrl(url.hostname) 
                 urlHash[key] = url
                 res.json({
@@ -58,16 +49,44 @@ app.post('/api/shorturl',(req,res) => {
                     error:'invalid hostname'
                 })
             }
-        })
-
-    }catch(err)
+    })
+}
+    else
     {
-        console.log("Not valid")
-        res.json({
-                error:'invalid url'
-        })
-
+    res.json({
+            error:'invalid url'
+    })
     }
+    // try{
+    //     const url = new URL(req.body.url)
+
+    //     dns.lookup(url.hostname,options,(data) => {
+
+    //         if(!data)
+    //         {
+    //             let key = myApp.hashUrl(url.hostname) 
+    //             urlHash[key] = url
+    //             res.json({
+    //                 original_url:url,
+    //                 short_url: key
+    //             })
+    //         }
+    //         else
+    //         {
+    //             res.json({
+    //                 error:'invalid hostname'
+    //             })
+    //         }
+    //     })
+
+    // }catch(err)
+    // {
+    //     console.log("Not valid")
+    //     res.json({
+    //             error:'invalid url'
+    //     })
+
+    // }
 })
 
 

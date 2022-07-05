@@ -8,7 +8,21 @@ const hashUrl = (url) => {
     return key%randomHash
 }
 
+const isValidUrl = (url) => {
+    let Url
+    try {
+        Url = new URL(url)
+    }
+    catch(err)
+    {
+        console.log(err)
+        return false
+    }
+    console.log(Url.protocol)
+    return (Url.protocol === "http:" || Url.protocol === "https:")
+}
 
 module.exports = {
-    hashUrl
+    hashUrl,
+    isValidUrl
 }
